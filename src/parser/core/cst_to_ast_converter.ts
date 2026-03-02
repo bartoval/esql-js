@@ -2168,25 +2168,6 @@ export class CstToAstConverter {
       queryVector = this.fromParameter(childContext);
     }
 
-    if (queryVector?.type === 'function' && childContext instanceof cst.FunctionContext) {
-      const functionExpression = childContext.functionExpression();
-      const closeParen = functionExpression.RP();
-      const closeParenText = closeParen?.getText() ?? '';
-      const hasOpenParen = Boolean(functionExpression.LP());
-      const hasValidCloseParen = Boolean(closeParen) && !/<missing /.test(closeParenText);
-      const hasMissingRequiredParams =
-        mmrDenseVectorFunctionsWithRequiredArgs.has(queryVector.name) &&
-        queryVector.args.length === 0;
-
-      if (hasOpenParen && !hasValidCloseParen && queryVector.args.length === 0) {
-        queryVector.incomplete = true;
-      }
-
-      if (hasValidCloseParen && hasMissingRequiredParams) {
-        queryVector.incomplete = true;
-      }
-    }
-
     return queryVector;
   }
 

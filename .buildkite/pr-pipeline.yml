@@ -16,10 +16,4 @@ steps:
       yarn lint
       yarn format:check
       yarn build
-
-  - label: 'Test'
-    agents: *agents
-    depends_on: 'check-and-build'
-    command: |
-      yarn install --frozen-lockfile
       yarn test

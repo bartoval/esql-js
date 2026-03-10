@@ -524,6 +524,12 @@ export class CstToAstConverter {
       return this.fromUriPartsCommand(uriPartsCommandCtx);
     }
 
+    const tsInfoCommandCtx = ctx.tsInfoCommand();
+
+    if (tsInfoCommandCtx) {
+      return this.fromTsInfoCommand(tsInfoCommandCtx);
+    }
+
     const metricsInfoCommandCtx = ctx.metricsInfoCommand();
 
     if (metricsInfoCommandCtx) {
@@ -2298,6 +2304,12 @@ export class CstToAstConverter {
     }
 
     return command;
+  }
+
+  // --------------------------------------------------------------- TS_INFO
+
+  private fromTsInfoCommand(ctx: cst.TsInfoCommandContext): ast.ESQLAstTsInfoCommand {
+    return this.createCommand<'ts_info', ast.ESQLAstTsInfoCommand>('ts_info', ctx);
   }
 
   // --------------------------------------------------------------- METRICS_INFO

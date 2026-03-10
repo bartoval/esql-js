@@ -21,6 +21,7 @@ export type ESQLAstCommand =
   | ESQLAstFuseCommand
   | ESQLAstForkCommand
   | ESQLAstUriPartsCommand
+  | ESQLAstTsInfoCommand
   | ESQLAstRegisteredDomainCommand;
 
 export type ESQLAstAllCommands = ESQLAstCommand | ESQLAstHeaderCommand;
@@ -163,6 +164,8 @@ export interface ESQLAstUriPartsCommand extends ESQLCommand<'uri_parts'> {
   targetField: ESQLColumn;
   expression?: ESQLAstExpression;
 }
+
+export interface ESQLAstTsInfoCommand extends ESQLCommand<'ts_info'> {}
 
 export interface ESQLAstRegisteredDomainCommand extends ESQLCommand<'registered_domain'> {
   targetField: ESQLColumn;

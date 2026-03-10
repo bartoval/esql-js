@@ -523,6 +523,12 @@ export class CstToAstConverter {
     if (uriPartsCommandCtx) {
       return this.fromUriPartsCommand(uriPartsCommandCtx);
     }
+
+    const tsInfoCommandCtx = ctx.tsInfoCommand();
+
+    if (tsInfoCommandCtx) {
+      return this.fromTsInfoCommand(tsInfoCommandCtx);
+    }
     // throw new Error(`Unknown processing command: ${this.getSrc(ctx)}`;
   }
 
@@ -2293,6 +2299,13 @@ export class CstToAstConverter {
 
     return command;
   }
+
+  // --------------------------------------------------------------- TS_INFO
+
+  private fromTsInfoCommand(ctx: cst.TsInfoCommandContext): ast.ESQLAstTsInfoCommand {
+    return this.createCommand<'ts_info', ast.ESQLAstTsInfoCommand>('ts_info', ctx);
+  }
+
   // -------------------------------------------------------------- expressions
 
   private toColumnsFromCommand(

@@ -21,6 +21,7 @@ import type {
   ESQLAstQueryExpression,
   ESQLAstRegisteredDomainCommand,
   ESQLAstRerankCommand,
+  ESQLAstTsInfoCommand,
   ESQLAstUriPartsCommand,
   ESQLColumn,
   ESQLCommandOption,
@@ -592,6 +593,12 @@ export class UriPartsCommandVisitorContext<
   Methods extends VisitorMethods = VisitorMethods,
   Data extends SharedData = SharedData,
 > extends CommandVisitorContext<Methods, Data, ESQLAstUriPartsCommand> {}
+
+// TS_INFO
+export class TsInfoCommandVisitorContext<
+  Methods extends VisitorMethods = VisitorMethods,
+  Data extends SharedData = SharedData,
+> extends CommandVisitorContext<Methods, Data, ESQLAstTsInfoCommand> {}
 
 // Expressions -----------------------------------------------------------------
 

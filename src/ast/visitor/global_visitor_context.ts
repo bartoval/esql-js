@@ -15,6 +15,7 @@ import type {
   ESQLAstQueryExpression,
   ESQLAstRegisteredDomainCommand,
   ESQLAstRerankCommand,
+  ESQLAstTsInfoCommand,
   ESQLAstUriPartsCommand,
   ESQLColumn,
   ESQLFunction,
@@ -238,6 +239,10 @@ export class GlobalVisitorContext<
           commandNode as ESQLAstUriPartsCommand,
           input as any
         );
+      }
+      case 'ts_info': {
+        if (!this.methods.visitTsInfoCommand) break;
+        return this.visitTsInfoCommand(parent, commandNode as ESQLAstTsInfoCommand, input as any);
       }
     }
     return this.visitCommandGeneric(parent, commandNode, input as any);
@@ -525,6 +530,15 @@ export class GlobalVisitorContext<
   ): types.VisitorOutput<Methods, 'visitUriPartsCommand'> {
     const context = new contexts.UriPartsCommandVisitorContext(this, node, parent);
     return this.visitWithSpecificContext('visitUriPartsCommand', context, input);
+  }
+
+  public visitTsInfoCommand(
+    parent: contexts.VisitorContext | null,
+    node: ESQLAstTsInfoCommand,
+    input: types.VisitorInput<Methods, 'visitTsInfoCommand'>
+  ): types.VisitorOutput<Methods, 'visitTsInfoCommand'> {
+    const context = new contexts.TsInfoCommandVisitorContext(this, node, parent);
+    return this.visitWithSpecificContext('visitTsInfoCommand', context, input);
   }
 
   // #endregion

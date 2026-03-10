@@ -529,6 +529,12 @@ export class CstToAstConverter {
     if (tsInfoCommandCtx) {
       return this.fromTsInfoCommand(tsInfoCommandCtx);
     }
+
+    const metricsInfoCommandCtx = ctx.metricsInfoCommand();
+
+    if (metricsInfoCommandCtx) {
+      return this.fromMetricsInfoCommand(metricsInfoCommandCtx);
+    }
     // throw new Error(`Unknown processing command: ${this.getSrc(ctx)}`;
   }
 
@@ -2304,6 +2310,14 @@ export class CstToAstConverter {
 
   private fromTsInfoCommand(ctx: cst.TsInfoCommandContext): ast.ESQLAstTsInfoCommand {
     return this.createCommand<'ts_info', ast.ESQLAstTsInfoCommand>('ts_info', ctx);
+  }
+
+  // --------------------------------------------------------------- METRICS_INFO
+
+  private fromMetricsInfoCommand(
+    ctx: cst.MetricsInfoCommandContext
+  ): ast.ESQLAstMetricsInfoCommand {
+    return this.createCommand<'metrics_info', ast.ESQLAstMetricsInfoCommand>('metrics_info', ctx);
   }
 
   // -------------------------------------------------------------- expressions

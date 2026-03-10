@@ -113,6 +113,7 @@ export type CommandVisitorInput<Methods extends VisitorMethods> = AnyToVoid<
     VisitorInput<Methods, 'visitChangePointCommand'> &
     VisitorInput<Methods, 'visitUriPartsCommand'> &
     VisitorInput<Methods, 'visitTsInfoCommand'> &
+    VisitorInput<Methods, 'visitMetricsInfoCommand'> &
     VisitorInput<Methods, 'visitRegisteredDomainCommand'>
 >;
 
@@ -147,6 +148,7 @@ export type CommandVisitorOutput<Methods extends VisitorMethods> =
   | VisitorOutput<Methods, 'visitCompletionCommand'>
   | VisitorOutput<Methods, 'visitUriPartsCommand'>
   | VisitorOutput<Methods, 'visitTsInfoCommand'>
+  | VisitorOutput<Methods, 'visitMetricsInfoCommand'>
   | VisitorOutput<Methods, 'visitRegisteredDomainCommand'>;
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -209,6 +211,11 @@ export interface VisitorMethods<
   visitMmrCommand?: Visitor<contexts.MmrCommandVisitorContext<Visitors, Data>, any, any>;
   visitUriPartsCommand?: Visitor<contexts.UriPartsCommandVisitorContext<Visitors, Data>, any, any>;
   visitTsInfoCommand?: Visitor<contexts.TsInfoCommandVisitorContext<Visitors, Data>, any, any>;
+  visitMetricsInfoCommand?: Visitor<
+    contexts.MetricsInfoCommandVisitorContext<Visitors, Data>,
+    any,
+    any
+  >;
   visitExpression?: Visitor<contexts.ExpressionVisitorContext<Visitors, Data>, any, any>;
   visitSourceExpression?: Visitor<
     contexts.SourceExpressionVisitorContext<Visitors, Data>,

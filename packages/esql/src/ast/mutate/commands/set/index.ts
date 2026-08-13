@@ -5,8 +5,7 @@
  * 2.0.
  */
 
-import { Builder } from '../../../builder';
-import { isAssignment } from '../../../is';
+import { Builder, isAssignment } from '@elastic/esql-ast';
 import { Parser } from '../../../../parser';
 import type {
   ESQLAstQueryExpression,

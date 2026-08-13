@@ -5,7 +5,7 @@
  * 2.0.
  */
 
-import { Walker } from '../../../walker';
+import { Walker } from '@elastic/esql-traversal';
 import type {
   ESQLAstQueryExpression,
   ESQLColumn,
@@ -15,7 +15,7 @@ import type {
 import { Visitor } from '../../../visitor';
 import { cmpArr, findByPredicate } from '../../util';
 import * as generic from '../../generic';
-import { Builder } from '../../../builder';
+import { Builder } from '@elastic/esql-ast';
 import type { Predicate } from '../../types';
 
 /**

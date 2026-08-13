@@ -5,10 +5,9 @@
  * 2.0.
  */
 
-import { isBooleanLiteral, isCommand } from '../ast/is';
-import { Builder } from '../ast/builder';
+import { isBooleanLiteral, isCommand, Builder } from '@elastic/esql-ast';
 import { ParameterHole, DoubleParameterHole } from './parameter_hole';
-import { Walker } from '../ast/walker';
+import { Walker } from '@elastic/esql-traversal';
 import { SynthLiteralFragment } from './synth/synth_literal_fragment';
 import type { ESQLCommand, ESQLNamedParamLiteral } from '../types';
 import type { ComposerQuery } from './composer_query';

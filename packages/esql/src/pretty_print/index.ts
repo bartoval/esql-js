@@ -5,8 +5,6 @@
  * 2.0.
  */
 
-export { LeafPrinter } from './leaf_printer';
-
 export {
   BasicPrettyPrinter,
   type BasicPrettyPrinterOptions,

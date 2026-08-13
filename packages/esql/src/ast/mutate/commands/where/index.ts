@@ -5,9 +5,8 @@
  * 2.0.
  */
 
-import { Walker } from '../../../walker';
-import { LeafPrinter } from '../../../../pretty_print';
-import { Builder } from '../../../builder';
+import { Walker } from '@elastic/esql-traversal';
+import { LeafPrinter, Builder } from '@elastic/esql-ast';
 import type {
   ESQLAstQueryExpression,
   ESQLColumn,

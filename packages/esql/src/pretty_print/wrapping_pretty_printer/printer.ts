@@ -659,7 +659,18 @@ export class WrappingPrettyPrinter {
 
   private docPostfixUnary(node: ESQLFunction, op: string): Doc {
     const operator = this.opts.lowercaseKeywords ? op.toLowerCase() : op.toUpperCase();
-    const argDoc = this.docExpression(node.args[0]);
+    const argument = node.args[0];
+    const argumentGroup = binaryExpressionGroup(argument);
+    let argDoc = this.docExpression(argument);
+
+    // Binary predicates such as `IN` are not bare value expressions and need parentheses
+    // before a postfix operator.
+    if (
+      argumentGroup !== BinaryExpressionGroup.none &&
+      argumentGroup < BinaryExpressionGroup.comparison
+    ) {
+      argDoc = ['(', argDoc, ')'];
+    }
 
     return [argDoc, ' ', operator];
   }

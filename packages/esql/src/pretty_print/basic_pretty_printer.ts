@@ -426,7 +426,20 @@ export class BasicPrettyPrinter {
         case 'postfix-unary-expression': {
           operator = this.keyword(operator);
 
-          const formatted = `${ctx.visitArgument(0)} ${operator}`;
+          const argument = ctx.arguments()[0];
+          const argumentGroup = binaryExpressionGroup(argument);
+          let formatted = ctx.visitArgument(0);
+
+          // Binary predicates such as `IN` are not bare value expressions and need parentheses
+          // before a postfix operator.
+          if (
+            argumentGroup !== BinaryExpressionGroup.none &&
+            argumentGroup < BinaryExpressionGroup.comparison
+          ) {
+            formatted = `(${formatted})`;
+          }
+
+          formatted = `${formatted} ${operator}`;
 
           return this.decorateWithComments(ctx.node, formatted);
         }

@@ -194,6 +194,13 @@ FROM index | LIMIT 10`;
     assertReprint(src, expected);
   });
 
+  test.each(['(field IN (1, 2)) IS NULL', 'field > 5 IS NULL'])(
+    'prints postfix operand grouping in %s',
+    (expression) => {
+      assertReprint(`FROM index | WHERE ${expression}`);
+    }
+  );
+
   test('all literal kinds: boolean, null, string, integer, double + postfix', () => {
     const src = `ROW b = TRUE, c = FALSE, n = NULL, s = "str", i = 42, d = 3.14, x = a IS NULL`;
     const expected = `ROW b = TRUE, c = FALSE, n = NULL, s = "str", i = 42, d = 3.14, x = a IS NULL`;

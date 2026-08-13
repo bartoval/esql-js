@@ -673,6 +673,17 @@ describe('single line query', () => {
 
           expect(text).toBe('ROW a IS NOT NULL');
         });
+
+        test.each([
+          ['binary predicate', '(field IN (1, 2)) IS NULL'],
+          ['comparison', 'field > 5 IS NULL'],
+        ])('prints a %s operand correctly', (_, expression) => {
+          const query = `FROM index | WHERE ${expression}`;
+          const { root, errors } = Parser.parse(query);
+
+          expect(errors).toHaveLength(0);
+          expect(BasicPrettyPrinter.print(root)).toBe(query);
+        });
       });
 
       describe('binary expression', () => {

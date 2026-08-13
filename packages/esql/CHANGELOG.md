@@ -1,5 +1,76 @@
 # @elastic/esql
 
+## 4.19.1
+
+### Patch Changes
+
+- [#218](https://github.com/elastic/esql-js/pull/218) [`a8558f8`](https://github.com/elastic/esql-js/commit/a8558f8e676ee5894c494831b6a7356a65541306) Thanks [@momovdg](https://github.com/momovdg)! - Fix broken type re-export of `DATE_PERIOD_UNITS`, `TIME_DURATION_UNITS`, and `TIME_SPAN_UNITS`: add `@elastic/esql-definitions` as an explicit dependency so the `./time` subpath resolves to the correct version in consumers that have an older version hoisted.
+
+- Updated dependencies []:
+  - @elastic/esql-types@4.19.1
+  - @elastic/esql-definitions@4.19.1
+  - @elastic/esql-grammar@4.19.1
+  - @elastic/esql-promql-grammar@4.19.1
+  - @elastic/pretty-printer@4.19.1
+  - @elastic/esql-traversal@4.19.1
+  - @elastic/esql-ast@4.19.1
+
+## 4.19.0
+
+### Patch Changes
+
+- [#216](https://github.com/elastic/esql-js/pull/216) [`8771d0c`](https://github.com/elastic/esql-js/commit/8771d0c408d6f943f30bb7b9b608130aac78cbf9) Thanks [@momovdg](https://github.com/momovdg)! - Add prefix support to HIGHLIGHT command AST: parse the optional `prefix = "..."` clause into `ESQLAstHighlightCommand.prefix` and expose the binary-expression assignment in `args`.
+
+- Updated dependencies [[`d1f87cb`](https://github.com/elastic/esql-js/commit/d1f87cb9b67642665fbc29e57a3e55fd272a89ff), [`8771d0c`](https://github.com/elastic/esql-js/commit/8771d0c408d6f943f30bb7b9b608130aac78cbf9), [`d1f87cb`](https://github.com/elastic/esql-js/commit/d1f87cb9b67642665fbc29e57a3e55fd272a89ff), [`d1f87cb`](https://github.com/elastic/esql-js/commit/d1f87cb9b67642665fbc29e57a3e55fd272a89ff)]:
+  - @elastic/esql-traversal@4.19.0
+  - @elastic/esql-types@4.19.0
+  - @elastic/esql-ast@4.19.0
+  - @elastic/esql-grammar@4.19.0
+  - @elastic/esql-promql-grammar@4.19.0
+  - @elastic/pretty-printer@4.19.0
+
+## 4.18.0
+
+### Minor Changes
+
+- [#215](https://github.com/elastic/esql-js/pull/215) [`260dcca`](https://github.com/elastic/esql-js/commit/260dccadff4b0b03a1d809aa6ff3317e19affcdb) Thanks [@bartoval](https://github.com/bartoval)! - update esql grammars and definitions from ES
+
+- [#210](https://github.com/elastic/esql-js/pull/210) [`c313e76`](https://github.com/elastic/esql-js/commit/c313e7657afcd9b80dd10b87e798be732436b21c) Thanks [@vadimkibana](https://github.com/vadimkibana)! - Update ES|QL gramamr and definitions; remove `isDevVersion()` automatically from grammars on ingestion
+
+### Patch Changes
+
+- [#213](https://github.com/elastic/esql-js/pull/213) [`ba0ef6b`](https://github.com/elastic/esql-js/commit/ba0ef6b68e920d8c0d2a9e7c447f17f92b720083) Thanks [@vadimkibana](https://github.com/vadimkibana)! - Correctly parse escaped sequences
+
+- [#207](https://github.com/elastic/esql-js/pull/207) [`bc85162`](https://github.com/elastic/esql-js/commit/bc851624a0849eceda113b3bfb1739cd3c279855) Thanks [@vadimkibana](https://github.com/vadimkibana)! - Update package READMEs
+
+- Updated dependencies [[`260dcca`](https://github.com/elastic/esql-js/commit/260dccadff4b0b03a1d809aa6ff3317e19affcdb), [`bc85162`](https://github.com/elastic/esql-js/commit/bc851624a0849eceda113b3bfb1739cd3c279855), [`c313e76`](https://github.com/elastic/esql-js/commit/c313e7657afcd9b80dd10b87e798be732436b21c)]:
+  - @elastic/esql-grammar@4.18.0
+  - @elastic/esql-types@4.18.0
+  - @elastic/esql-promql-grammar@4.18.0
+  - @elastic/pretty-printer@4.18.0
+
+## 4.17.0
+
+### Minor Changes
+
+- [#203](https://github.com/elastic/esql-js/pull/203) [`68f8cc2`](https://github.com/elastic/esql-js/commit/68f8cc2f4f27d3102eec149425d19f41b2d6c38f) Thanks [@vadimkibana](https://github.com/vadimkibana)! - The `Walker` now traverses embedded PromQL expressions across its whole API surface:
+
+  - `Walker.params()` collects PromQL param literals (e.g. `?host` in label matchers, `??labels` in grouping label lists) alongside ES|QL params, in source order.
+  - `Walker.find()`, `findAll()`, `match()`, `matchAll()`, `replace()`, and `replaceAll()` match and mutate nodes of both dialects, match templates accept PromQL node types and keys (e.g. `{type: 'selector'}`, `{dialect: 'promql'}`).
+  - `Walker.parent()` and `parents()` resolve parents of PromQL nodes, ancestry crosses the dialect boundary (the parent of a PromQL root expression is the containing ES|QL node).
+  - `Walker.visitComments()` reports comments inside PromQL expressions.
+  - `Walker.findFunction()` and `hasFunction()` accept a `dialects` option (default `['esql']`) — same-named ES|QL and PromQL functions are unrelated, so PromQL matching is opt-in.
+  - The PromQL walker visitor API gains `skipChildren()`, for parity with the ES|QL walker.
+  - Statics that take caller options now chain caller-supplied visitors instead of overriding them.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @elastic/esql-types@4.17.0
+  - @elastic/esql-grammar@4.17.0
+  - @elastic/esql-promql-grammar@4.17.0
+  - @elastic/pretty-printer@4.17.0
+
 ## 4.16.0
 
 ### Minor Changes

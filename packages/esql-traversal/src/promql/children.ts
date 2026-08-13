@@ -1,0 +1,92 @@
+/*
+ * Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under one
+ * or more contributor license agreements. Licensed under the Elastic License
+ * 2.0; you may not use this file except in compliance with the Elastic License
+ * 2.0.
+ */
+
+import { isPromqlNode } from '@elastic/esql-ast';
+import type { PromQLAstNode } from '@elastic/esql-types';
+
+export function* childrenOfPromqlNode(node: PromQLAstNode): Iterable<PromQLAstNode> {
+  if (!isPromqlNode(node)) {
+    return;
+  }
+
+  switch (node.type) {
+    case 'query': {
+      if (node.expression) {
+        yield node.expression;
+      }
+      return;
+    }
+    case 'function': {
+      if (node.grouping && node.groupingPosition !== 'after') {
+        yield node.grouping;
+      }
+      yield* node.args;
+      if (node.grouping && node.groupingPosition === 'after') {
+        yield node.grouping;
+      }
+      return;
+    }
+    case 'selector': {
+      yield* node.args;
+      return;
+    }
+    case 'label': {
+      const { labelName, value } = node;
+      if (labelName) yield labelName;
+      if (value) yield value;
+      return;
+    }
+    case 'binary-expression': {
+      yield node.left;
+      if (node.modifier) yield node.modifier;
+      yield node.right;
+      return;
+    }
+    case 'unary-expression': {
+      yield node.arg;
+      return;
+    }
+    case 'subquery': {
+      yield node.expr;
+      yield node.range;
+      if (node.resolution) yield node.resolution;
+      if (node.evaluation) yield node.evaluation;
+      return;
+    }
+    case 'parens': {
+      if (node.child) yield node.child;
+      return;
+    }
+    case 'evaluation': {
+      if (node.offset) yield node.offset;
+      if (node.at) yield node.at;
+      return;
+    }
+    case 'offset': {
+      if (node.duration) yield node.duration;
+      return;
+    }
+    case 'at': {
+      if (typeof node.value !== 'string') yield node.value;
+      return;
+    }
+    case 'modifier': {
+      yield* node.labels;
+      if (node.groupModifier) yield node.groupModifier;
+      return;
+    }
+    case 'group-modifier': {
+      yield* node.labels;
+      return;
+    }
+  }
+
+  if ('args' in node && Array.isArray(node.args)) {
+    yield* node.args;
+    return;
+  }
+}

@@ -8,17 +8,21 @@
 import type * as antlr from 'antlr4';
 import * as cst from '@elastic/esql-grammar';
 import type * as ast from '../../types';
-import { isCommand, isStringLiteral } from '../../ast/is';
-import { LeafPrinter } from '../../pretty_print';
+import {
+  isCommand,
+  isStringLiteral,
+  LeafPrinter,
+  Builder,
+  type AstNodeParserFields,
+  type AstNodeTemplate,
+} from '@elastic/esql-ast';
 import { getPosition } from './tokens';
 import { nonNullable, unescapeColumn } from './helpers';
 import { firstItem, lastItem, resolveItem, singleItems } from '../../ast/visitor/utils';
-import { type AstNodeParserFields, Builder } from '../../ast/builder';
 import { type ArithmeticUnaryContext } from '@elastic/esql-grammar';
 import { PromQLParser } from '../../embedded_languages/promql/parser/parser';
-import type { AstNodeTemplate } from '../../ast/builder';
 import type { Parser } from './parser';
-import type { PromQLAstQueryExpression } from '../../embedded_languages/promql/types';
+import type { PromQLAstQueryExpression } from '@elastic/esql-types';
 
 const textExistsAndIsValid = (text: string | undefined): text is string =>
   !!(text && !/<missing /.test(text));
@@ -2422,6 +2426,25 @@ export class CstToAstConverter {
   private fromHighlightCommand(ctx: cst.HighlightCommandContext): ast.ESQLAstHighlightCommand {
     const command = this.createCommand<'highlight', ast.ESQLAstHighlightCommand>('highlight', ctx);
 
+    if (ctx.ASSIGN()) {
+      if (ctx._prefix && !ctx._prefix.exception) {
+        const prefixLiteral = this.toStringLiteral(ctx._prefix);
+        const keyword = this.toColumn(ctx._prefixKeyword);
+        const assignment = this.toFunction(
+          ctx.ASSIGN().getText(),
+          ctx,
+          undefined,
+          'binary-expression'
+        ) as ast.ESQLBinaryExpression;
+        assignment.args.push(keyword, prefixLiteral);
+        assignment.location = this.extendLocationToArgs(assignment);
+        command.prefix = prefixLiteral;
+        command.args.push(assignment);
+      } else {
+        command.incomplete = true;
+      }
+    }
+
     const queryExprCtx = ctx._queryExpression;
     if (queryExprCtx && !queryExprCtx.exception) {
       const queryExpr = this.fromBooleanExpression(queryExprCtx);
@@ -2903,9 +2926,7 @@ export class CstToAstConverter {
       return undefined;
     }
 
-    const right =
-      this.fromStringOrParameter(ctx.stringOrParameter()) ??
-      this.fromParserRuleToUnknown(ctx.stringOrParameter());
+    const right = this.fromPrimaryExpressionStrict(ctx.primaryExpression());
     const notCtx = ctx.NOT();
     const likeType = ctx instanceof cst.RlikeExpressionContext ? 'rlike' : 'like';
     const operator = `${notCtx ? 'not ' : ''}${likeType}` as ast.BinaryExpressionOperator;
@@ -3708,12 +3729,22 @@ export class CstToAstConverter {
     let valueUnquoted = isTripleQuoted ? quotedString.slice(3, -3) : quotedString.slice(1, -1);
 
     if (!isTripleQuoted) {
-      valueUnquoted = valueUnquoted
-        .replace(/\\"/g, '"')
-        .replace(/\\r/g, '\r')
-        .replace(/\\n/g, '\n')
-        .replace(/\\t/g, '\t')
-        .replace(/\\\\/g, '\\');
+      valueUnquoted = valueUnquoted.replace(/\\([tnr"\\])/g, (_, c: string) => {
+        switch (c) {
+          case 't':
+            return '\t';
+          case 'n':
+            return '\n';
+          case 'r':
+            return '\r';
+          case '"':
+            return '"';
+          case '\\':
+            return '\\';
+          default:
+            return c;
+        }
+      });
     }
 
     return Builder.expression.literal.string(

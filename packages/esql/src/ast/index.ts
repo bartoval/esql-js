@@ -11,8 +11,5 @@ export * from './location';
 export * from './grouping';
 
 // AST manipulation tools
-export { Builder, type AstNodeParserFields, type AstNodeTemplate } from './builder';
-export { singleItems, resolveItem, lastItem, firstItem } from './visitor/utils';
-export { Walker, type WalkerOptions, walk, type WalkerAstNode } from './walker';
 export * as mutate from './mutate';
 export * from './visitor';

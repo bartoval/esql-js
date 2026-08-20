@@ -2803,6 +2803,10 @@ export class CstToAstConverter {
       return this.fromLogicalIn(ctx);
     }
 
+    if (ctx instanceof cst.LogicalInMultiColumnSubqueryContext) {
+      return this.fromLogicalInMultiColumnSubquery(ctx);
+    }
+
     if (ctx instanceof cst.LogicalInSubqueryContext) {
       return this.fromLogicalInSubquery(ctx);
     }
@@ -2874,6 +2878,15 @@ export class CstToAstConverter {
     return this.toLogicalInFunction(ctx, left, right, ctx.stop?.stop ?? right.location.max);
   }
 
+  private fromLogicalInMultiColumnSubquery(
+    ctx: cst.LogicalInMultiColumnSubqueryContext
+  ): ast.ESQLAstExpression {
+    const left = this.toTuple(ctx.valueExpression_list(), ctx.LP(), ctx.RP());
+    const right = this.fromSubquery(ctx.subquery());
+
+    return this.toLogicalInFunction(ctx, left, right, ctx.stop?.stop ?? right.location.max);
+  }
+
   private fromLogicalInLeft(leftCtx: cst.ValueExpressionContext): ast.ESQLAstExpression {
     return resolveItem(
       this.visitValueExpression(leftCtx) ?? this.fromParserRuleToUnknown(leftCtx)
@@ -2881,7 +2894,10 @@ export class CstToAstConverter {
   }
 
   private toLogicalInFunction(
-    ctx: cst.LogicalInContext | cst.LogicalInSubqueryContext,
+    ctx:
+      | cst.LogicalInContext
+      | cst.LogicalInSubqueryContext
+      | cst.LogicalInMultiColumnSubqueryContext,
     left: ast.ESQLAstExpression,
     right: ast.ESQLAstExpression,
     max: number

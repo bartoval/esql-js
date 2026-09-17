@@ -1,5 +1,21 @@
 # @elastic/esql
 
+## 4.25.1
+
+### Patch Changes
+
+- [#248](https://github.com/elastic/esql-js/pull/248) [`960bf20`](https://github.com/elastic/esql-js/commit/960bf2075a62a60ad9a233468bf5af6f24112758) Thanks [@awahab07](https://github.com/awahab07)! - Print SET header commands on their own line in multiline and pipe-multiline output
+
+- Updated dependencies [[`0df48e7`](https://github.com/elastic/esql-js/commit/0df48e7d0ae86ea75d0f7193cdfd91e82eb87092)]:
+  - @elastic/esql-definitions@4.25.1
+  - @elastic/esql-types@4.25.1
+  - @elastic/esql-grammar@4.25.1
+  - @elastic/esql-promql-grammar@4.25.1
+  - @elastic/pretty-printer@4.25.1
+  - @elastic/esql-traversal@4.25.1
+  - @elastic/esql-parser@4.25.1
+  - @elastic/esql-ast@4.25.1
+
 ## 4.25.0
 
 ### Minor Changes

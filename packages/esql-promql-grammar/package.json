@@ -31,7 +31,7 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "antlr4:deps": "brew bundle --file=../../.buildkite/scripts/antlr4_tools/brewfile",
-    "build:antlr4": "yarn build:antlr4:lexer && yarn build:antlr4:parser && ../../.buildkite/scripts/postbuild.sh promql",
+    "build:antlr4": "pnpm run build:antlr4:lexer && pnpm run build:antlr4:parser && ../../.buildkite/scripts/postbuild.sh promql",
     "build:antlr4:parser": "antlr -Dlanguage=TypeScript src/promql_parser.g4",
     "build:antlr4:lexer": "antlr -Dlanguage=TypeScript src/promql_lexer.g4"
   },
@@ -41,6 +41,7 @@
   },
   "devDependencies": {
     "@types/jest": "30.0.0",
+    "@types/node": "25.2.3",
     "jest": "30.4.2",
     "ts-jest": "29.4.11",
     "tsup": "8.5.1",

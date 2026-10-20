@@ -267,12 +267,29 @@ export type ESQLAstPromqlCommandQuery =
 export type ESQLAstPromqlQuery = PromQLAstQueryExpression;
 
 /**
- * Represents a header pseudo-command, such as SET.
+ * Represents a header pseudo-command: an instruction of the query prelude.
+ *
+ * A header command:
+ *
+ * - appears before the main query (i.e. before its source command), never
+ *   after a pipe `|`;
+ * - is terminated by a semicolon `;`;
+ * - is not part of the command pipeline, it is stored in
+ *   `ESQLAstQueryExpression.header`, in source order;
+ * - binds names to values, its arguments are `name = value` assignments.
+ *
+ * The meaning of the binding depends on the command `name`, consumers must
+ * discriminate header commands by `name`:
+ *
+ * - `SET` binds a query setting to a constant or a map: `SET name = value;`
+ * - `LET` binds a relation name to a subquery: `LET name = ( subquery );`
  *
  * Example:
  *
  * ```
- * SET setting1 = "value1", setting2 = "value2";
+ * SET setting1 = "value1";
+ * LET name = (FROM index | LIMIT 10);
+ * FROM name
  * ```
  */
 export interface ESQLAstHeaderCommand<
@@ -303,6 +320,18 @@ export type ESQLAstSetHeaderCommand = ESQLAstHeaderCommand<
   ESQLBinaryExpression<BinaryExpressionAssignmentOperator>
 >;
 
+/**
+ * Represents a LET named subquery binding: `LET name = ( subquery );`.
+ *
+ * The single argument is a `name = ( subquery )` assignment, where the left
+ * side is an `ESQLIdentifier` and the right side is an `ESQLParens` wrapping
+ * the subquery.
+ */
+export type ESQLAstLetHeaderCommand = ESQLAstHeaderCommand<
+  'let',
+  ESQLBinaryExpression<BinaryExpressionAssignmentOperator>
+>;
+
 export type ESQLIdentifierOrParam = ESQLIdentifier | ESQLParamLiteral;
 
 export interface ESQLCommandOption extends ESQLAstBaseItem {
@@ -312,6 +341,7 @@ export interface ESQLCommandOption extends ESQLAstBaseItem {
 
 export interface ESQLAstQueryExpression extends ESQLAstBaseItem<''> {
   type: 'query';
+  /** Query prelude instructions (`SET`, `LET`), in source order. */
   header?: ESQLAstHeaderCommand[];
   commands: ESQLAstCommand[];
 }

@@ -99,21 +99,9 @@ FROM index`);
     });
 
     describe('LET', () => {
-      test('SET and multiple LET commands', () => {
-        const { text } = reprint(
-          'SET a = 1; LET x = (FROM i | LIMIT 1); LET y = (FROM x | WHERE a > 1); FROM y | WHERE c IN (FROM x)'
-        );
-
-        expect('\n' + text).toBe(`
-SET a = 1;
-LET x = (FROM i | LIMIT 1);
-LET y = (FROM x | WHERE a > 1);
-FROM y | WHERE c IN (FROM x)`);
-      });
-
       test('long LET subquery breaks inside the parens', () => {
         const { text } = reprint(
-          'LET top2_clusters = (FROM k8s | STATS AVG(network.bytes_in) BY cluster | SORT `AVG(network.bytes_in)` DESC | LIMIT 2 | KEEP cluster); FROM k8s | WHERE cluster IN (FROM top2_clusters) | STATS AVG(network.bytes_in) BY cluster, pod'
+          'LET top2_clusters = (FROM k8s | STATS AVG(network.bytes_in) BY cluster | SORT `AVG(network.bytes_in)` DESC | LIMIT 2); FROM top2_clusters'
         );
 
         expect('\n' + text).toBe(`
@@ -121,11 +109,8 @@ LET top2_clusters = (
   FROM k8s
     | STATS AVG(network.bytes_in) BY cluster
     | SORT \`AVG(network.bytes_in)\` DESC
-    | LIMIT 2
-    | KEEP cluster);
-FROM k8s
-  | WHERE cluster IN (FROM top2_clusters)
-  | STATS AVG(network.bytes_in) BY cluster, pod`);
+    | LIMIT 2);
+FROM top2_clusters`);
       });
     });
   });

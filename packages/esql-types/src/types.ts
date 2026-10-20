@@ -267,22 +267,11 @@ export type ESQLAstPromqlCommandQuery =
 export type ESQLAstPromqlQuery = PromQLAstQueryExpression;
 
 /**
- * Represents a header pseudo-command: an instruction of the query prelude.
+ * A `name = value;` instruction placed before the main query, stored in
+ * `ESQLAstQueryExpression.header` in source order. Discriminate by `name`:
  *
- * A header command:
- *
- * - appears before the main query (i.e. before its source command), never
- *   after a pipe `|`;
- * - is terminated by a semicolon `;`;
- * - is not part of the command pipeline, it is stored in
- *   `ESQLAstQueryExpression.header`, in source order;
- * - binds names to values, its arguments are `name = value` assignments.
- *
- * The meaning of the binding depends on the command `name`, consumers must
- * discriminate header commands by `name`:
- *
- * - `SET` binds a query setting to a constant or a map: `SET name = value;`
- * - `LET` binds a relation name to a subquery: `LET name = ( subquery );`
+ * - `SET` binds a query setting: `SET name = value;`
+ * - `LET` binds a subquery to a name: `LET name = (subquery);`
  *
  * Example:
  *
